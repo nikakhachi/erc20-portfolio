@@ -27,24 +27,35 @@ contract TokenUnlistingTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(portfolio)), 0);
     }
 
-    function testUnlistOneOfTheTokens() public {
-        for (uint256 i = 0; i < addresses1.length; i++) {
-            portfolio.listToken(addresses1[i]);
+    function testUnlistOneOfTheTokens(uint8 amount1, uint8 amount2) public {
+        /// @dev Just to make tests faster
+        vm.assume(amount1 < 20 && amount1 > 0);
+        vm.assume(amount2 < 20 && amount2 > 0);
+
+        for (uint256 i = 0; i < amount1; i++) {
+            portfolio.listToken(address(new ERC20("Test", "TEST")));
         }
+
+        /// @dev listing our target token
         portfolio.listToken(address(token));
         uint tokenId = portfolio.getSupportedTokenId(address(token));
-        for (uint256 i = 0; i < addresses2.length; i++) {
-            portfolio.listToken(addresses2[i]);
+
+        address lastTokenAddress;
+        for (uint256 i = 0; i < amount2; i++) {
+            address token = address(new ERC20("Test", "TEST"));
+            portfolio.listToken(token);
+            lastTokenAddress = token;
         }
+
         portfolio.unlistToken(address(token));
-        assertEq(
-            portfolio.getSupportedTokensCount(),
-            addresses1.length + addresses2.length
-        );
+
+        assertEq(portfolio.getSupportedTokensCount(), amount1 + amount2);
         assertEq(portfolio.getSupportedTokenId(address(token)), 0);
-        assertEq(
-            portfolio.supportedTokens(tokenId - 1),
-            addresses2[addresses2.length - 1]
-        );
+        assertEq(portfolio.supportedTokens(tokenId - 1), lastTokenAddress);
+    }
+
+    function testUnlistInvalidTokenFuzz(address token) public {
+        vm.expectRevert();
+        portfolio.unlistToken(address(token));
     }
 }
