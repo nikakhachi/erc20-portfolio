@@ -3,7 +3,13 @@ pragma solidity ^0.8.20;
 
 import "./ERC20Portfolio.t.sol";
 
+/**
+ * @title TokenUnlistingTest Contract
+ * @author Nika Khachiashvili
+ * @dev Contract for testing token unlisting functionality use cases
+ */
 contract TokenUnlistingTest is ERC20PortfolioTest {
+    /// @dev test the token unlisting when portfolio has only that token with 0 balance
     function testUnlistTheOnlyTokenWithZeroBalance() public {
         portfolio.listToken(address(token));
         portfolio.unlistToken(address(token));
@@ -11,6 +17,7 @@ contract TokenUnlistingTest is ERC20PortfolioTest {
         assertEq(portfolio.getSupportedTokenId(address(token)), 0);
     }
 
+    /// @dev test the token unlisting when portfolio has only that token with non-zero balance
     function testUnlistTheOnlyTokenWithBalanceFuzz(uint256 amount) public {
         deal(address(token), address(this), amount);
 
@@ -27,6 +34,7 @@ contract TokenUnlistingTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(portfolio)), 0);
     }
 
+    /// @dev test the token unlisting when portfolio has other tokens as well
     function testUnlistOneOfTheTokens(uint8 amount1, uint8 amount2) public {
         /// @dev Just to make tests faster
         vm.assume(amount1 < 20 && amount1 > 0);
@@ -54,6 +62,7 @@ contract TokenUnlistingTest is ERC20PortfolioTest {
         assertEq(portfolio.supportedTokens(tokenId - 1), lastTokenAddress);
     }
 
+    /// @dev test the unlisting of nonexisting token
     function testUnlistInvalidTokenFuzz(address token) public {
         vm.expectRevert();
         portfolio.unlistToken(address(token));

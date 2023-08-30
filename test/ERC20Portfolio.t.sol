@@ -11,6 +11,7 @@ import "openzeppelin/token/ERC20/ERC20.sol";
  * @dev Main test contract for testing the Portfolio
  */
 contract ERC20PortfolioTest is Test {
+    /// @dev Portfolio contract
     ERC20Portfolio public portfolio;
 
     /// @dev Random Token for testing purposes

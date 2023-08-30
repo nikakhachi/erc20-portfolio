@@ -3,7 +3,13 @@ pragma solidity ^0.8.20;
 
 import "./ERC20Portfolio.t.sol";
 
+/**
+ * @title EmergencyWithdrawTest Contract
+ * @author Nika Khachiashvili
+ * @dev Contract for testing the emergency withdraw functionality
+ */
 contract EmergencyWithdrawTest is ERC20PortfolioTest {
+    /// @dev testing the emergency withdraw of token
     function testEmergencyWithdraw(uint8 amount) public {
         vm.assume(amount < 10); /// @dev Just to make test faster
 

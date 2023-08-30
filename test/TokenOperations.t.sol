@@ -3,7 +3,13 @@ pragma solidity ^0.8.20;
 
 import "./ERC20Portfolio.t.sol";
 
+/**
+ * @title TokenOperationsTest Contract
+ * @author Nika Khachiashvili
+ * @dev Contract for testing token operation use cases
+ */
 contract TokenOperationsTest is ERC20PortfolioTest {
+    /// @dev testing the deposit of token
     function testDepositFuzz(uint256 amount) public {
         portfolio.listToken(address(token));
 
@@ -15,6 +21,7 @@ contract TokenOperationsTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(portfolio)), amount);
     }
 
+    /// @dev testing the transfer of token to another address
     function testTransferFuzz(uint256 amount) public {
         portfolio.listToken(address(token));
 
@@ -31,6 +38,7 @@ contract TokenOperationsTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(portfolio)), 0);
     }
 
+    /// @dev testing the withdraw of token
     function testTransferAsWithdrawFuzz(uint256 amount) public {
         portfolio.listToken(address(token));
 

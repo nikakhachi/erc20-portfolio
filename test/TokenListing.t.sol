@@ -6,7 +6,7 @@ import "./ERC20Portfolio.t.sol";
 /**
  * @title TokenListingTest Contract
  * @author Nika Khachiashvili
- * @dev Contract for testing token listing functionality
+ * @dev Contract for testing token listing functionality use cases
  */
 contract TokenListingTest is ERC20PortfolioTest {
     /// @dev testing the listing of token on empty portfolio
