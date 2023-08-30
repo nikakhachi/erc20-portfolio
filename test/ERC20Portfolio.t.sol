@@ -20,6 +20,7 @@ contract ERC20PortfolioTest is Test {
     /// @dev Setting up the testing environment
     function setUp() public {
         portfolio = new ERC20Portfolio();
+        portfolio.initialize();
         token = new ERC20("Test", "TEST");
     }
 

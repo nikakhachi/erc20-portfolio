@@ -2,7 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "openzeppelin/token/ERC20/IERC20.sol";
-import "openzeppelin/access/Ownable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "./UC.sol";
 import "forge-std/console.sol";
 
@@ -11,7 +13,7 @@ import "forge-std/console.sol";
  * @author Nika Khachiashvili
  * @dev ERC20 tokens smart contract portfolio
  */
-contract ERC20Portfolio is Ownable {
+contract ERC20Portfolio is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     error InvalidToken();
 
     /// @dev Used when requesting balances of all tokens
@@ -27,6 +29,18 @@ contract ERC20Portfolio is Ownable {
     mapping(address => uint256) public supportedTokensToIds;
 
     address[] public supportedTokens; /// @dev List of supported token addresses
+
+    /// @dev This is the recommendation from the OZ, uncomment it when deploying.
+    /// @dev During the tests, it's better to disable it, because it makes the tests fail
+    // /// @custom:oz-upgrades-unsafe-allow constructor
+    // constructor() {
+    //     _disableInitializers();
+    // }
+
+    function initialize() public initializer {
+        __Ownable_init();
+        __UUPSUpgradeable_init();
+    }
 
     /// @notice List the token of the choice
     /// @param _token The address of the token to list
@@ -190,4 +204,8 @@ contract ERC20Portfolio is Ownable {
             token.transfer(msg.sender, token.balanceOf(address(this)));
         }
     }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 }
