@@ -32,6 +32,8 @@ contract TokenUnlistingTest is ERC20PortfolioTest {
         assertEq(portfolio.getSupportedTokenId(address(token)), 0);
         assertEq(token.balanceOf(address(this)), amount);
         assertEq(token.balanceOf(address(portfolio)), 0);
+        assertEq(portfolio.getOwnersBalance(address(token)), amount);
+        assertEq(portfolio.getPortfolioBalance(address(token)), 0);
     }
 
     /// @dev test the token unlisting when portfolio has other tokens as well

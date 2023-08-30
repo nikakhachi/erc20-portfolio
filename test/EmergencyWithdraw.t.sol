@@ -29,6 +29,8 @@ contract EmergencyWithdrawTest is ERC20PortfolioTest {
             ERC20 token = ERC20(tokens[i]);
             assertEq(token.balanceOf(address(this)), i);
             assertEq(token.balanceOf(address(portfolio)), 0);
+            assertEq(portfolio.getOwnersBalance(address(token)), i);
+            assertEq(portfolio.getPortfolioBalance(address(token)), 0);
         }
     }
 }

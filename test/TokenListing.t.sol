@@ -10,11 +10,19 @@ import "./ERC20Portfolio.t.sol";
  */
 contract TokenListingTest is ERC20PortfolioTest {
     /// @dev testing the listing of token on empty portfolio
-    function testListTokenOnEmptyPortfolio() public {
+    function testListTokenOnEmptyPortfolioFuzz(uint256 amount) public {
+        deal(address(token), address(this), amount);
+
+        token.approve(address(portfolio), amount);
         portfolio.listToken(address(token));
+
         assertEq(portfolio.getSupportedTokensCount(), 1);
         assertEq(portfolio.supportedTokens(0), address(token));
         assertEq(portfolio.getSupportedTokenId(address(token)), 1);
+        assertEq(token.balanceOf(address(portfolio)), amount);
+        assertEq(token.balanceOf(address(this)), 0);
+        assertEq(portfolio.getOwnersBalance(address(token)), 0);
+        assertEq(portfolio.getPortfolioBalance(address(token)), amount);
     }
 
     /// @dev testing the listing of token on empty portfolio
