@@ -32,10 +32,16 @@ contract TokenListingTest is ERC20PortfolioTest {
         assertEq(portfolio.getSupportedTokenId(address(token)), amount + 1);
     }
 
-    /// @dev testing the listing of token
+    /// @dev testing the listing of existing token
     function testListExistingToken() public {
         portfolio.listToken(address(token));
         vm.expectRevert(ERC20Portfolio.InvalidToken.selector);
         portfolio.listToken(address(token));
+    }
+
+    /// @dev testing the listing of non-ERC20 address
+    function testListingInvalidToken() public {
+        vm.expectRevert();
+        portfolio.listToken(address(0));
     }
 }
