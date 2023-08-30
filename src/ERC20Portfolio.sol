@@ -14,9 +14,13 @@ contract ERC20Portfolio is Ownable {
 
     function listToken(address _token) external onlyOwner {
         if (supportedTokensToIds[_token] != 0) revert InvalidToken();
+
         supportedTokens.push(_token);
-        /// @dev ids are 1-indexed, it avoids confusion with the default value 0
+
+        /// @dev ids are 1-indexed, it avoids confusion with the default value 0 also it prevents
+        /// @dev malicious actors from unlisting the nonexisting token (explanation in unlistToken())
         supportedTokensToIds[_token] = supportedTokens.length;
+
         /// @dev With this, the fucntion also makes sure that only ERC20 addresses are listed
         /// @dev Without it, if the owner incorrectly lists non-erc20, the unlisting transaction
         /// @dev  will revert because it uses .transfer() method
@@ -29,16 +33,18 @@ contract ERC20Portfolio is Ownable {
     }
 
     function unlistToken(address _token) external onlyOwner {
-        /// @dev If the malicious actor tries to unlist a token that's not listed, the id will be 0
-        /// @dev And the transacton will revert with underflow error
-        uint256 indexOfUnlistedToken = supportedTokensToIds[_token] - 1;
         if (supportedTokens.length != 1) {
+            /// @dev If the malicious actor tries to unlist a token that's not listed, the id will be 0
+            /// @dev And the transacton will revert with underflow error
+            uint256 indexOfUnlistedToken = supportedTokensToIds[_token] - 1;
             address lastToken = supportedTokens[supportedTokens.length - 1];
             supportedTokens[indexOfUnlistedToken] = lastToken;
             supportedTokensToIds[lastToken] = indexOfUnlistedToken;
         }
+
         supportedTokens.pop();
         supportedTokensToIds[_token] = 0;
+
         IERC20 token = IERC20(_token);
         token.transfer(msg.sender, token.balanceOf(address(this)));
     }
