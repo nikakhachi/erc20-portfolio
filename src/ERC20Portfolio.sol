@@ -7,11 +7,13 @@ import "./UC.sol";
 import "forge-std/console.sol";
 
 contract ERC20Portfolio is Ownable {
+    error InvalidToken();
+
     mapping(address => uint256) public supportedTokensToIds;
     address[] public supportedTokens;
 
     function listToken(address _token) external onlyOwner {
-        require(supportedTokensToIds[_token] == 0, "Token already listed");
+        if (supportedTokensToIds[_token] != 0) revert InvalidToken();
         supportedTokens.push(_token);
         /// @dev ids are 1-indexed, it avoids confusion with the default value 0
         supportedTokensToIds[_token] = supportedTokens.length;
