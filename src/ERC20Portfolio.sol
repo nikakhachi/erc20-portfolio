@@ -9,6 +9,12 @@ import "forge-std/console.sol";
 contract ERC20Portfolio is Ownable {
     error InvalidToken();
 
+    /// @dev Used when requesting balances of all tokens
+    struct TokenBalance {
+        address token;
+        uint256 balance;
+    }
+
     mapping(address => uint256) public supportedTokensToIds;
     address[] public supportedTokens;
 
@@ -81,6 +87,56 @@ contract ERC20Portfolio is Ownable {
         address _token
     ) external view returns (uint256) {
         return IERC20(_token).balanceOf(address(this));
+    }
+
+    function showOriginalBalances(
+        uint page,
+        uint pageSize
+    ) external view returns (TokenBalance[] memory) {
+        uint length = supportedTokens.length;
+
+        TokenBalance[] memory tokenBalances = new TokenBalance[](length);
+
+        /// @dev Starting with page 0
+        for (
+            UC i = uc(page * pageSize);
+            i < uc((page + 1) * pageSize);
+            i = i + ONE
+        ) {
+            uint256 id = i.unwrap();
+            address tokenAddress = supportedTokens[id];
+            IERC20 token = IERC20(tokenAddress);
+            tokenBalances[id] = TokenBalance({
+                token: tokenAddress,
+                balance: token.balanceOf(owner())
+            });
+        }
+        return tokenBalances;
+    }
+
+    function showPortfolioBalances(
+        uint page,
+        uint pageSize
+    ) external view returns (TokenBalance[] memory) {
+        uint length = supportedTokens.length;
+
+        TokenBalance[] memory tokenBalances = new TokenBalance[](length);
+
+        /// @dev Starting with page 0
+        for (
+            UC i = uc(page * pageSize);
+            i < uc((page + 1) * pageSize);
+            i = i + ONE
+        ) {
+            uint256 id = i.unwrap();
+            address tokenAddress = supportedTokens[id];
+            IERC20 token = IERC20(tokenAddress);
+            tokenBalances[id] = TokenBalance({
+                token: tokenAddress,
+                balance: token.balanceOf(address(this))
+            });
+        }
+        return tokenBalances;
     }
 
     function getSupportedTokenId(
