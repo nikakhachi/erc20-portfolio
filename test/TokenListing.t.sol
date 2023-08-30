@@ -10,11 +10,11 @@ import "./ERC20Portfolio.t.sol";
  */
 contract TokenListingTest is ERC20PortfolioTest {
     /// @dev testing the listing of token on empty portfolio
-    function testListTokenOnEmptyPortfolioFuzz(address _token) public {
-        portfolio.listToken(_token);
+    function testListTokenOnEmptyPortfolio() public {
+        portfolio.listToken(address(token));
         assertEq(portfolio.getSupportedTokensCount(), 1);
-        assertEq(portfolio.supportedTokens(0), _token);
-        assertEq(portfolio.getSupportedTokenId(_token), 1);
+        assertEq(portfolio.supportedTokens(0), address(token));
+        assertEq(portfolio.getSupportedTokenId(address(token)), 1);
     }
 
     /// @dev testing the listing of token on empty portfolio
@@ -33,9 +33,9 @@ contract TokenListingTest is ERC20PortfolioTest {
     }
 
     /// @dev testing the listing of token
-    function testListExistingTokenFuzz(address _token) public {
-        portfolio.listToken(_token);
+    function testListExistingToken() public {
+        portfolio.listToken(address(token));
         vm.expectRevert(ERC20Portfolio.InvalidToken.selector);
-        portfolio.listToken(_token);
+        portfolio.listToken(address(token));
     }
 }

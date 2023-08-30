@@ -17,6 +17,15 @@ contract ERC20Portfolio is Ownable {
         supportedTokens.push(_token);
         /// @dev ids are 1-indexed, it avoids confusion with the default value 0
         supportedTokensToIds[_token] = supportedTokens.length;
+        /// @dev With this, the fucntion also makes sure that only ERC20 addresses are listed
+        /// @dev Without it, if the owner incorrectly lists non-erc20, the unlisting transaction
+        /// @dev  will revert because it uses .transfer() method
+        IERC20 token = IERC20(_token);
+        token.transferFrom(
+            msg.sender,
+            address(this),
+            token.allowance(msg.sender, address(this))
+        );
     }
 
     function unlistToken(address _token) external onlyOwner {
