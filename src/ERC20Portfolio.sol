@@ -51,17 +51,19 @@ contract ERC20Portfolio is Ownable {
     /// @notice Unlist the token of the choice
     /// @dev The function will revert if the token is not listed
     function unlistToken(address _token) external onlyOwner {
-        if (supportedTokens.length != 1) {
+        uint256 length = supportedTokens.length;
+
+        if (length != 1) {
             /// @dev If the malicious actor tries to unlist a token that's not listed, the id will be 0
             /// @dev And the transacton will revert with underflow error
             uint256 indexOfUnlistedToken = supportedTokensToIds[_token] - 1;
-            address lastToken = supportedTokens[supportedTokens.length - 1];
+            address lastToken = supportedTokens[length - 1];
             supportedTokens[indexOfUnlistedToken] = lastToken;
             supportedTokensToIds[lastToken] = indexOfUnlistedToken;
         }
 
         supportedTokens.pop();
-        supportedTokensToIds[_token] = 0;
+        delete supportedTokensToIds[_token];
 
         IERC20 token = IERC20(_token);
         token.transfer(msg.sender, token.balanceOf(address(this)));
