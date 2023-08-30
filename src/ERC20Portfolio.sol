@@ -49,6 +49,7 @@ contract ERC20Portfolio is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         supportedTokens.push(_token);
 
+        /// @dev ids are 1-indexed. See details explanation above the mapping
         supportedTokensToIds[_token] = supportedTokens.length;
 
         /// @dev With this, the fucntion also makes sure that only ERC20 addresses are listed
