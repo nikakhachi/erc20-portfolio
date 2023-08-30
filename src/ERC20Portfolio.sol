@@ -87,14 +87,19 @@ contract ERC20Portfolio is Ownable {
         return IERC20(_token).balanceOf(address(this));
     }
 
+    /// @notice Get owner balances of all tokens using the pagination
+    /// @dev If user provides pageSize that is greater than the number of tokens, the function will revert
+    /// @dev I didn't want to put in extra code for that, so user will have to calculate the correct arguments
+    /// @param page The page number to start from
+    /// @param pageSize The number of tokens to return
+    /// @return TokenBalance[] An array of TokenBalance structs
     function getOwnersBalances(
         uint page,
         uint pageSize
     ) external view returns (TokenBalance[] memory) {
-        uint length = supportedTokens.length;
+        TokenBalance[] memory tokenBalances = new TokenBalance[](pageSize);
 
-        TokenBalance[] memory tokenBalances = new TokenBalance[](length);
-
+        UC index = ZERO;
         /// @dev Starting with page 0
         for (
             UC i = uc(page * pageSize);
@@ -104,22 +109,28 @@ contract ERC20Portfolio is Ownable {
             uint256 id = i.unwrap();
             address tokenAddress = supportedTokens[id];
             IERC20 token = IERC20(tokenAddress);
-            tokenBalances[id] = TokenBalance({
+            tokenBalances[index.unwrap()] = TokenBalance({
                 token: tokenAddress,
                 balance: token.balanceOf(owner())
             });
+            index = index + ONE;
         }
         return tokenBalances;
     }
 
+    /// @notice Get portfolio balances of all tokens using the pagination
+    /// @dev If user provides pageSize that is greater than the number of tokens, the function will revert
+    /// @dev I didn't want to put in extra code for that, so user will have to calculate the correct arguments
+    /// @param page The page number to start from
+    /// @param pageSize The number of tokens to return
+    /// @return TokenBalance[] An array of TokenBalance structs
     function getPortfolioBalances(
         uint page,
         uint pageSize
     ) external view returns (TokenBalance[] memory) {
-        uint length = supportedTokens.length;
+        TokenBalance[] memory tokenBalances = new TokenBalance[](pageSize);
 
-        TokenBalance[] memory tokenBalances = new TokenBalance[](length);
-
+        UC index = ZERO;
         /// @dev Starting with page 0
         for (
             UC i = uc(page * pageSize);
@@ -129,10 +140,11 @@ contract ERC20Portfolio is Ownable {
             uint256 id = i.unwrap();
             address tokenAddress = supportedTokens[id];
             IERC20 token = IERC20(tokenAddress);
-            tokenBalances[id] = TokenBalance({
+            tokenBalances[index.unwrap()] = TokenBalance({
                 token: tokenAddress,
                 balance: token.balanceOf(address(this))
             });
+            index = index + ONE;
         }
         return tokenBalances;
     }
