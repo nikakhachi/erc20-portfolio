@@ -5,21 +5,18 @@ import "forge-std/Test.sol";
 import "../src/ERC20Portfolio.sol";
 import "openzeppelin/token/ERC20/ERC20.sol";
 
+/**
+ * @title ERC20PortfolioTest Contract
+ * @author Nika Khachiashvili
+ * @dev Main test contract for testing the Portfolio
+ */
 contract ERC20PortfolioTest is Test {
     ERC20Portfolio public portfolio;
+
+    /// @dev Random Token for testing purposes
     ERC20 public token;
 
-    address[7] addresses1 = [
-        address(0),
-        address(1),
-        address(2),
-        address(3),
-        address(4),
-        address(5),
-        address(6)
-    ];
-    address[3] addresses2 = [address(7), address(8), address(9)];
-
+    /// @dev Setting up the testing environment
     function setUp() public {
         portfolio = new ERC20Portfolio();
         token = new ERC20("Test", "TEST");
