@@ -77,17 +77,17 @@ contract ERC20Portfolio is Ownable {
         IERC20(_token).transfer(_to, _amount);
     }
 
-    function showOwnersBalance(address _token) external view returns (uint256) {
+    function getOwnersBalance(address _token) external view returns (uint256) {
         return IERC20(_token).balanceOf(owner());
     }
 
-    function showPortfolioBalance(
+    function getPortfolioBalance(
         address _token
     ) external view returns (uint256) {
         return IERC20(_token).balanceOf(address(this));
     }
 
-    function showOwnersBalances(
+    function getOwnersBalances(
         uint page,
         uint pageSize
     ) external view returns (TokenBalance[] memory) {
@@ -112,7 +112,7 @@ contract ERC20Portfolio is Ownable {
         return tokenBalances;
     }
 
-    function showPortfolioBalances(
+    function getPortfolioBalances(
         uint page,
         uint pageSize
     ) external view returns (TokenBalance[] memory) {
