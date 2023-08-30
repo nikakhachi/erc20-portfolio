@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "./ERC20Portfolio.t.sol";
 
 contract TokenOperationsTest is ERC20PortfolioTest {
-    function testDeposit(uint256 amount) public {
+    function testDepositFuzz(uint256 amount) public {
         portfolio.listToken(address(token));
 
         deal(address(token), address(this), amount);
@@ -15,7 +15,7 @@ contract TokenOperationsTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(portfolio)), amount);
     }
 
-    function testTransfer(uint256 amount) public {
+    function testTransferFuzz(uint256 amount) public {
         portfolio.listToken(address(token));
 
         deal(address(token), address(this), amount);
@@ -28,6 +28,19 @@ contract TokenOperationsTest is ERC20PortfolioTest {
 
         assertEq(token.balanceOf(address(this)), 0);
         assertEq(token.balanceOf(recipient), amount);
+        assertEq(token.balanceOf(address(portfolio)), 0);
+    }
+
+    function testTransferAsWithdrawFuzz(uint256 amount) public {
+        portfolio.listToken(address(token));
+
+        deal(address(token), address(this), amount);
+        token.approve(address(portfolio), amount);
+        portfolio.deposit(address(token), amount);
+
+        portfolio.transfer(address(token), address(this), amount);
+
+        assertEq(token.balanceOf(address(this)), amount);
         assertEq(token.balanceOf(address(portfolio)), 0);
     }
 }
