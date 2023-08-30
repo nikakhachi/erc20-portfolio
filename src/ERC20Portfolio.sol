@@ -6,6 +6,11 @@ import "openzeppelin/access/Ownable.sol";
 import "./UC.sol";
 import "forge-std/console.sol";
 
+/**
+ * @title ERC20Portfolio Contract
+ * @author Nika Khachiashvili
+ * @dev ERC20 tokens smart contract portfolio
+ */
 contract ERC20Portfolio is Ownable {
     error InvalidToken();
 
@@ -15,16 +20,21 @@ contract ERC20Portfolio is Ownable {
         uint256 balance;
     }
 
+    /// @dev Tokens mapped to their ids in supportedTokens array, but ids are 1-indexed here
+    /// @dev id 1 here, means id 0 in the array
+    /// @dev It avoids confusion with the default value 0 also it prevents
+    /// @dev malicious actors from unlisting the nonexisting token (explanation in unlistToken())
     mapping(address => uint256) public supportedTokensToIds;
-    address[] public supportedTokens;
 
+    address[] public supportedTokens; /// @dev List of supported token addresses
+
+    /// @notice List the token of the choice
+    /// @param _token The address of the token to list
     function listToken(address _token) external onlyOwner {
         if (supportedTokensToIds[_token] != 0) revert InvalidToken();
 
         supportedTokens.push(_token);
 
-        /// @dev ids are 1-indexed, it avoids confusion with the default value 0 also it prevents
-        /// @dev malicious actors from unlisting the nonexisting token (explanation in unlistToken())
         supportedTokensToIds[_token] = supportedTokens.length;
 
         /// @dev With this, the fucntion also makes sure that only ERC20 addresses are listed
@@ -38,6 +48,8 @@ contract ERC20Portfolio is Ownable {
         );
     }
 
+    /// @notice Unlist the token of the choice
+    /// @dev The function will revert if the token is not listed
     function unlistToken(address _token) external onlyOwner {
         if (supportedTokens.length != 1) {
             /// @dev If the malicious actor tries to unlist a token that's not listed, the id will be 0
@@ -77,10 +89,16 @@ contract ERC20Portfolio is Ownable {
         IERC20(_token).transfer(_to, _amount);
     }
 
+    /// @notice Get the owner balance of the specific token
+    /// @param _token The address of the token to get the balance of
+    /// @return uint256 The balance of the token
     function getOwnersBalance(address _token) external view returns (uint256) {
         return IERC20(_token).balanceOf(owner());
     }
 
+    /// @notice Get the portfolio balance of the specific token
+    /// @param _token The address of the token to get the balance of
+    /// @return uint256 The balance of the token
     function getPortfolioBalance(
         address _token
     ) external view returns (uint256) {
@@ -149,16 +167,20 @@ contract ERC20Portfolio is Ownable {
         return tokenBalances;
     }
 
+    /// @notice Get the token id by its address
+    /// @param _token The address of the token
     function getSupportedTokenId(
         address _token
     ) external view returns (uint256) {
         return supportedTokensToIds[_token];
     }
 
+    /// @notice Get the count of the supported tokens
     function getSupportedTokensCount() external view returns (uint256) {
         return supportedTokens.length;
     }
 
+    /// @notice Withdraw all tokens from the contract
     function emergencyWithdraw() external onlyOwner {
         uint256 length = supportedTokens.length;
         for (UC i = ZERO; i < uc(length); i = i + ONE) {
