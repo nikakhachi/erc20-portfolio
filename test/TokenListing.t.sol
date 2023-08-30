@@ -23,6 +23,8 @@ contract TokenListingTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(this)), 0);
         assertEq(portfolio.getOwnersBalance(address(token)), 0);
         assertEq(portfolio.getPortfolioBalance(address(token)), amount);
+        assertEq(portfolio.getOwnersBalances(0, 1)[0].balance, 0);
+        assertEq(portfolio.getPortfolioBalances(0, 1)[0].balance, amount);
     }
 
     /// @dev testing the listing of token on empty portfolio
