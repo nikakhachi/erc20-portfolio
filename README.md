@@ -5,5 +5,3 @@ A. Create a ERC20 tokens smart contract portfolio.
 - Be able to transfer tokens for the user from the portfolio smart contract
 
 - Bonus: emergency withdraw all tokens
-
-### Token listing must be there for iterating and withdrawing.
