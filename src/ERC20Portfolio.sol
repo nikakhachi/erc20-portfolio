@@ -43,10 +43,20 @@ contract ERC20Portfolio is Ownable {
         token.transfer(msg.sender, token.balanceOf(address(this)));
     }
 
+    /// @notice Deposit any amount of any tokens into the contract
+    /// @dev There's no check because to save the gas. If owner deposits tokens that are not listed, they can use transfer() to get them back
+    /// @dev There's no onlyOwner check because the owner doesn't lose anything if someone else deposits tokens
+    /// @param _token The address of the token to deposit
+    /// @param _amount The amount of tokens to deposit
     function deposit(address _token, uint256 _amount) external {
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
     }
 
+    /// @notice Transfer any amount of any tokens from the contract to any address
+    /// @notice Can be used to withdraw the funds by simply specifying the owner address
+    /// @param _token The address of the token to transfer
+    /// @param _to The address to transfer the tokens to
+    /// @param _amount The amount of tokens to transfer
     function transfer(
         address _token,
         address _to,
