@@ -1,6 +1,11 @@
 # ERC20 Token Portfolio.
 
-This project implements an upgradeable (UUPS Proxy pattern) ERC20Portfolio smart contract, where the owner of the contract is able to add, remove, show list of tokens with their balances, to transfer tokens for the user from the portfolio smart contract and to withdraw all the funds in case of emergency
+This project implements an upgradeable (UUPS Proxy pattern) ERC20Portfolio smart contract, where the owner of the contract is able to
+
+- Add, remove, and show a list of tokens with their balances,
+- Transfer tokens from the portfolio
+- Approve certain spenders to spend certain token amounts
+- Withdraw all the funds in case of emergency
 
 The development tool used is the Foundry where the contracts and the tests are written, and then there's Hardhat integrated which is used for writing the deployment and upgrade scripts.
 
@@ -11,8 +16,6 @@ The development tool used is the Foundry where the contracts and the tests are w
 - [Deploying](#deploying)
 
 ## Features
-
-### EventFactory Contract
 
 - **_listToken_** - Owner can list the token in portfolio by calling this function. The argument passed should be the address of that token. If the address isn't ERC20 token the transaction will revert because at the end of the function, smart contracts tries to transfer all the allowance from that address to the portfolio. It's done for safety reasons so that invalid address isn't added and if the allowance is 0, it's okay
 
