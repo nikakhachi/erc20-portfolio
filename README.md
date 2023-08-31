@@ -20,7 +20,13 @@ The development tool used is the Foundry where the contracts and the tests are w
 
 - **_deposit_** - Function for depositing any amount of any token into the contract. Anyone can call this function, because owner isn't losing anything when someone deposits some token in the contract. Can only deposit listed contracts. Sure if owner mistakenly transfers wrong tokens to portfolio they can withdraw them by calling _transfer_ function but if this goes unnoticed, at the time of emergencyWithdraw(), those tokens will not get withdrawn and will be a panic situation
 
-- **_transfer_** - Owner can transfer token funds by calling this function. It can be also used to withdraw the funds or send it to someone else.
+- **_transfer_** - Owner AND approved addresses for certain tokens can transfer token funds by calling this function. It can be also used to withdraw the funds or send it to someone else.
+
+- **_approve_** - Owner can approve certain addresses to spend certain token amounts.
+
+- **_revoke_** - Owner can revoke certain addresses and nullify their approvals for certain provided token.
+
+- **_revokeAll_** - Owner can revoke certain addresses and nullify their approvals for all listed token.
 
 - **_getOwnersBalance_** - Get the owners balance of the specific token
 

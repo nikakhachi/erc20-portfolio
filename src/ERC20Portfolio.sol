@@ -19,6 +19,7 @@ contract ERC20Portfolio is
     UUPSUpgradeable
 {
     error InvalidToken();
+    error NotApproved();
 
     /// @dev Used when requesting balances of all tokens
     struct TokenBalance {
@@ -33,6 +34,10 @@ contract ERC20Portfolio is
     mapping(address => uint256) public supportedTokensToIds;
 
     address[] public supportedTokens; /// @dev List of supported token addresses
+
+    /// @dev This mapping contains the data about the approvals for certain addresses to spend
+    /// @dev certain tokens.
+    mapping(address => mapping(address => uint256)) public approvals;
 
     /// @dev This is the recommendation from the OZ, uncomment it when deploying.
     /// @dev During the tests, it's better to disable it, because it makes the tests fail
@@ -102,15 +107,43 @@ contract ERC20Portfolio is
 
     /// @notice Transfer any amount of any tokens from the contract to any address
     /// @notice Can be used to withdraw the funds by simply specifying the owner address
+    /// @notice It can also be used by the addresses who were approved by the owner to spend a token
     /// @param _token The address of the token to transfer
     /// @param _to The address to transfer the tokens to
     /// @param _amount The amount of tokens to transfer
-    function transfer(
+    function transfer(address _token, address _to, uint256 _amount) external {
+        if (msg.sender != owner() && approvals[msg.sender][_token] < _amount)
+            revert NotApproved();
+        IERC20(_token).transfer(_to, _amount);
+    }
+
+    /// @notice Approve the spender to spend the amount of the token
+    /// @dev If the spender is already approved, the function will overwrite the previous approval
+    /// @param _token The address of the token to approve
+    /// @param _spender The address of the spender
+    /// @param _amount The amount of tokens to approve
+    function approve(
         address _token,
-        address _to,
+        address _spender,
         uint256 _amount
     ) external onlyOwner {
-        IERC20(_token).transfer(_to, _amount);
+        approvals[_spender][_token] = _amount;
+    }
+
+    /// @notice Revoke the approval of the spender to spend the token
+    /// @param _spender The address of the spender
+    /// @param _token The address of the token to revoke the approval of
+    function revoke(address _token, address _spender) external onlyOwner {
+        delete approvals[_spender][_token];
+    }
+
+    /// @notice Revoke the approval of the spender to spend all tokens
+    /// @param _spender The address of the spender
+    function revokeAll(address _spender) external onlyOwner {
+        uint length = supportedTokens.length;
+        for (UC i = ZERO; i < uc(length); i = i + ONE) {
+            delete approvals[_spender][supportedTokens[i.unwrap()]];
+        }
     }
 
     /// @notice Get the owner balance of the specific token
