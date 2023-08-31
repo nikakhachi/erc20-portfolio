@@ -72,5 +72,5 @@ If you would like to deploy it locally, make sure to run `npx hardhat node` befo
 
 If you would like to upgrade the already deployed proxy, make sure to:
 
-1. Modify the PROXY address in `script/upgrade.ts`.
+1. Modify the `PROXY` variable in `script/upgrade.ts`.
 2. Upgrade the smart contract with ` npx hardhat run script/upgrade.ts --network {network name}`
