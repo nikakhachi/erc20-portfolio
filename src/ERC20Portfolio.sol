@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "openzeppelin/token/ERC20/IERC20.sol";
-import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/Ownable2StepUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "./UC.sol";
@@ -13,7 +13,11 @@ import "forge-std/console.sol";
  * @author Nika Khachiashvili
  * @dev ERC20 tokens smart contract portfolio
  */
-contract ERC20Portfolio is Initializable, OwnableUpgradeable, UUPSUpgradeable {
+contract ERC20Portfolio is
+    Initializable,
+    Ownable2StepUpgradeable,
+    UUPSUpgradeable
+{
     error InvalidToken();
 
     /// @dev Used when requesting balances of all tokens
