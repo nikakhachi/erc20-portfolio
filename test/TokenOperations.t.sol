@@ -51,4 +51,13 @@ contract TokenOperationsTest is ERC20PortfolioTest {
         assertEq(token.balanceOf(address(this)), amount);
         assertEq(token.balanceOf(address(portfolio)), 0);
     }
+
+    /// @dev testing the deposit of invalid token
+    function testDepositInvalidTokenFuzz(uint256 amount) public {
+        deal(address(token), address(this), amount);
+        token.approve(address(portfolio), amount);
+
+        vm.expectRevert(ERC20Portfolio.InvalidToken.selector);
+        portfolio.deposit(address(token), amount);
+    }
 }

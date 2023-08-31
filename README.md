@@ -18,7 +18,7 @@ The development tool used is the Foundry where the contracts and the tests are w
 
 - **_unlistToken_** - Owner can unlist the token from portfolio by calling this function. The argument passed should be the address of that token. After unlisting, all the funds of that token that were in the portfolio, will be transfered to owner
 
-- **_deposit_** - Function for depositing any amount of any token into the contract. Anyone can call this function, because owner isn't losing anything when someone deposits some token in the contract.
+- **_deposit_** - Function for depositing any amount of any token into the contract. Anyone can call this function, because owner isn't losing anything when someone deposits some token in the contract. Can only deposit listed contracts. Sure if owner mistakenly transfers wrong tokens to portfolio they can withdraw them by calling _transfer_ function but if this goes unnoticed, at the time of emergencyWithdraw(), those tokens will not get withdrawn and will be a panic situation
 
 - **_transfer_** - Owner can transfer token funds by calling this function. It can be also used to withdraw the funds or send it to someone else.
 

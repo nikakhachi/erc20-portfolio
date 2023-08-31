@@ -89,11 +89,14 @@ contract ERC20Portfolio is
     }
 
     /// @notice Deposit any amount of any tokens into the contract
-    /// @dev There's no check because to save the gas. If owner deposits tokens that are not listed, they can use transfer() to get them back
     /// @dev There's no onlyOwner check because the owner doesn't lose anything if someone else deposits tokens
     /// @param _token The address of the token to deposit
     /// @param _amount The amount of tokens to deposit
     function deposit(address _token, uint256 _amount) external {
+        /// @dev Without this check, owner can without a problem get the tokens back by calling .transfer(). But,
+        /// @dev if this goes unnoticed, at the time of emergencyWithdraw(), those tokens will not get withdrawn.
+        /// @dev and will be a panic situation
+        if (supportedTokensToIds[_token] == 0) revert InvalidToken();
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
     }
 
