@@ -66,11 +66,11 @@ To deploy the contract, you will have to do the following
 2. Run `forge install && npm install`.
 3. Create the `.env` file based on the `.env.example`.
 4. Modify network options in `hardhat.config.ts`.
-5. Deploy the smart contract with ` npx hardhat run script/deploy.ts --network {network name}`
+5. Deploy the smart contract with ` npx hardhat run scripts/deploy.ts --network {network name}`
 
 If you would like to deploy it locally, make sure to run `npx hardhat node` before the 3rd step, and deploy the smart contract with `localhost` as the "network name"
 
 If you would like to upgrade the already deployed proxy, make sure to:
 
-1. Modify the `PROXY` variable in `script/upgrade.ts`.
-2. Upgrade the smart contract with ` npx hardhat run script/upgrade.ts --network {network name}`
+1. Modify the `PROXY` variable in `scripts/upgrade.ts`.
+2. Upgrade the smart contract with ` npx hardhat run scripts/upgrade.ts --network {network name}`
